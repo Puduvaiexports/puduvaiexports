@@ -102,7 +102,7 @@ export default function Home() {
           <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-[600px]">
             <div className="absolute inset-0 bg-blue-600/5 rounded-full blur-3xl"></div>
             <Image
-              src="/hero-visual.png"
+              src="/hero-visual.jpg"
               alt="Global Healthcare Supply"
               fill
               className="object-contain drop-shadow-2xl animate-float"
