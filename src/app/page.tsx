@@ -35,7 +35,7 @@ export default function Home() {
           Puduvai <span className="text-slate-800 font-semibold">Exports</span>
         </div>
         <div className="hidden md:flex gap-8 text-sm font-medium">
-          {["Home", "About", "Medicare", "Contact"].map((item) => (
+          {["Home", "About", "Medicare", "Our Brands", "Brochure", "Contact"].map((item) => (
             <button
               key={item}
               onClick={() => scrollToSection(item.toLowerCase())}
@@ -102,7 +102,7 @@ export default function Home() {
           <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-[600px]">
             <div className="absolute inset-0 bg-blue-600/5 rounded-full blur-3xl"></div>
             <Image
-              src="/hero-visual.jpg"
+              src="/herovisual.jpg"
               alt="Global Healthcare Supply"
               fill
               className="object-contain drop-shadow-2xl animate-float"
@@ -192,6 +192,55 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Our Brands Section */}
+      <section id="our brands" className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <h2 className="text-3xl md:text-5xl font-extrabold font-heading mb-4 text-slate-900">Our Brands</h2>
+            <div className="w-20 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
+            <p className="mt-6 text-slate-600 text-lg">
+              We take pride in our diverse portfolio of healthcare brands, each representing our commitment to quality and innovation.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-32 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 hover:border-blue-200 transition-colors group">
+                <span className="text-slate-400 font-bold group-hover:text-blue-500 transition-colors">Brand {i}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Brochure Section */}
+      <section id="brochure" className="py-24 bg-blue-600 text-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+            <div className="max-w-2xl text-center md:text-left">
+              <h2 className="text-3xl md:text-5xl font-extrabold font-heading mb-6">Download Our Digital Brochure</h2>
+              <p className="text-blue-100 text-lg mb-8">
+                Get a comprehensive overview of our complete product range, technical specifications, and quality certifications in our latest catalog.
+              </p>
+              <button className="bg-white text-blue-600 px-10 py-4 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-xl flex items-center gap-3 mx-auto md:mx-0">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download PDF (5.2 MB)
+              </button>
+            </div>
+            <div className="hidden md:flex w-64 h-80 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 rotate-3 items-center justify-center shadow-2xl">
+              <div className="w-48 h-64 bg-white rounded-lg flex flex-col p-4">
+                <div className="w-full h-32 bg-slate-100 rounded mb-4"></div>
+                <div className="h-2 w-3/4 bg-slate-100 rounded mb-2"></div>
+                <div className="h-2 w-full bg-slate-100 rounded mb-2"></div>
+                <div className="h-2 w-1/2 bg-slate-100 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer id="contact" className="py-20 bg-white border-t border-slate-100">
         <div className="container mx-auto px-6 text-center">
@@ -202,7 +251,7 @@ export default function Home() {
             Located in Puducherry, India | Serving Global Healthcare Markets with precision and trust.
           </p>
           <div className="flex flex-wrap justify-center gap-8 mb-12">
-            {["Home", "About", "Medicare", "Contact"].map((item) => (
+            {["Home", "About", "Medicare", "Our Brands", "Brochure", "Contact"].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase())}
