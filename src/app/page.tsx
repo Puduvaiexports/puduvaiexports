@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
 
+  const [isBrochureOpen, setIsBrochureOpen] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -24,6 +26,12 @@ export default function Home() {
     }
   };
 
+  const brochureItems = [
+    { category: "Healthcare", name: "5 Nature", icon: "🌱" },
+    { category: "FMCG", name: "Tasty6", icon: "🥘" },
+    { category: "Healthcare", name: "First Care", icon: "🛡️" },
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Navbar */}
@@ -34,8 +42,8 @@ export default function Home() {
         <div className="text-xl md:text-2xl font-extrabold tracking-tighter font-heading text-blue-600">
           Puduvai <span className="text-slate-800 font-semibold">Exports</span>
         </div>
-        <div className="hidden md:flex gap-8 text-sm font-medium">
-          {["Home", "About", "Medicare", "Our Brands", "Brochure", "Contact"].map((item) => (
+        <div className="hidden md:flex gap-8 text-sm font-medium items-center">
+          {["Home", "About", "Medicare", "Our Brands"].map((item) => (
             <button
               key={item}
               onClick={() => scrollToSection(item.toLowerCase())}
@@ -44,6 +52,58 @@ export default function Home() {
               {item}
             </button>
           ))}
+
+          {/* Brochure Dropdown */}
+          <div
+            className="relative group"
+            onMouseEnter={() => setIsBrochureOpen(true)}
+            onMouseLeave={() => setIsBrochureOpen(false)}
+          >
+            <button className="flex items-center gap-1 text-slate-600 hover:text-blue-600 transition-colors py-2">
+              Brochure
+              <svg
+                className={`w-4 h-4 transition-transform duration-200 ${isBrochureOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* Dropdown Card */}
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-4 transition-all duration-300 origin-top ${isBrochureOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
+              <div className="space-y-2">
+                {brochureItems.map((item, idx) => (
+                  <button
+                    key={idx}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-all group text-left"
+                  >
+                    <span className="text-2xl">{item.icon}</span>
+                    <div>
+                      <div className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">{item.category}</div>
+                      <div className="text-slate-900 font-bold">{item.name}</div>
+                    </div>
+                    <svg className="w-4 h-4 ml-auto text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 pt-4 border-t border-slate-50">
+                <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors">
+                  View All Brochures
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => scrollToSection("contact")}
+            className="text-slate-600 hover:text-blue-600 transition-colors"
+          >
+            Contact
+          </button>
         </div>
         <button
           onClick={() => scrollToSection("contact")}
