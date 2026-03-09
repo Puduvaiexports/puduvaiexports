@@ -99,7 +99,7 @@ export default function LeadGeneratorPage() {
         setSelectedLeads(new Set()); // Clear selection
 
         try {
-            const response = await fetch('/api/scrape', {
+            const response = await fetch('/api/leads-scrape', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

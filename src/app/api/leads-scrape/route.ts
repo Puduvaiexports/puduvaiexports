@@ -1,20 +1,20 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import chromium from '@sparticuz/chromium';
-
-puppeteer.use(StealthPlugin());
 
 const B2C_KEYWORDS = /hospital|clinic|pharmacy|surgery|care|dental|doctor/i;
 
 async function getBrowser() {
+    const puppeteer = (await import('puppeteer-extra')).default;
+    const StealthPlugin = (await import('puppeteer-extra-plugin-stealth')).default;
+    const chromium = (await import('@sparticuz/chromium')).default;
+
+    puppeteer.use(StealthPlugin());
+
     if (process.env.NODE_ENV === 'production') {
-        const executablePath = await chromium.executablePath();
         return puppeteer.launch({
             args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: executablePath,
-            headless: chromium.headless,
+            executablePath: await chromium.executablePath(),
+            headless: true,
         });
     } else {
         return puppeteer.launch({
@@ -30,20 +30,19 @@ async function scrapeGoogleMaps(page: any, query: string, country: string, maxRe
 
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
 
-    // Accept cookies if prompt appears
     try {
         const consentButton = await page.$('button[aria-label="Accept all"], button:has-text("I agree")');
         if (consentButton) await consentButton.click();
     } catch (e) { }
 
-    // Scroll to load results
     let results: any[] = [];
     const feedSelector = 'div[role="feed"]';
 
     try {
         await page.waitForSelector(feedSelector, { timeout: 15000 });
         let lastHeight = 0;
-        while (results.length < maxResults) {
+        let attempts = 0;
+        while (results.length < maxResults && attempts < 10) {
             results = await page.$$('a[href*="/maps/place/"]');
             if (results.length >= maxResults) break;
 
@@ -56,6 +55,7 @@ async function scrapeGoogleMaps(page: any, query: string, country: string, maxRe
             const newHeight = await page.evaluate((selector: string) => document.querySelector(selector)?.scrollHeight || 0, feedSelector);
             if (newHeight === lastHeight) break;
             lastHeight = newHeight;
+            attempts++;
         }
     } catch (e) {
         console.error("Scroll error:", e);
@@ -66,7 +66,7 @@ async function scrapeGoogleMaps(page: any, query: string, country: string, maxRe
 
     for (const link of itemLinks.slice(0, maxResults)) {
         try {
-            const lead: any = { company_name: '', phone: '', website: '', email: '', category: query, country, source: 'Google Maps' };
+            const lead: any = { company_name: '', phone: '', website: '', email: '', category: query.replace(' Importers', ''), country, source: 'Google Maps' };
 
             await link.click();
             await new Promise(r => setTimeout(r, 1000));
@@ -117,7 +117,7 @@ async function scrapeDork(page: any, query: string, country: string, maxResults:
 
     for (const result of results.slice(0, maxResults)) {
         try {
-            const lead: any = { company_name: '', phone: '', website: '', email: '', category: query, country, source };
+            const lead: any = { company_name: '', phone: '', website: '', email: '', category: query.replace(' Importers', ''), country, source };
 
             const titleEl = await result.$('h3');
             const linkEl = await result.$('a');
@@ -160,7 +160,6 @@ export async function POST(request: Request) {
 
         let allLeads: any[] = [];
 
-        // Process sequentially to avoid memory issues on Vercel
         for (const source of sources) {
             for (const category of categories) {
                 let batch: any[] = [];
@@ -173,7 +172,6 @@ export async function POST(request: Request) {
             }
         }
 
-        // Deduplication
         const seen = new Set();
         let finalLeads = allLeads.filter(lead => {
             const normalized = (lead.company_name || "").toLowerCase().trim();
@@ -182,7 +180,6 @@ export async function POST(request: Request) {
             return true;
         });
 
-        // Filtering
         if (strictFilter) {
             finalLeads = finalLeads.filter(lead => !B2C_KEYWORDS.test(lead.company_name || ""));
         }
